@@ -13,7 +13,10 @@ site_dir: site
 # テーマ設定
 theme:
   name: material
+  custom_dir: overrides
   language: ja
+  icon:
+    logo: material/book-open-page-variant
   palette:
     - scheme: default
       primary: indigo
@@ -32,13 +35,21 @@ theme:
     code: Roboto Mono
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
+    - navigation.expand
+    - navigation.path
     - navigation.top
     - navigation.footer
+    - navigation.instant
+    - navigation.instant.progress
     - search.suggest
     - search.highlight
+    - search.share
     - content.code.copy
     - content.code.annotate
+    - content.tabs.link
+    - toc.follow
 
 # ナビゲーション構造
 nav:

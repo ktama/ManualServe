@@ -1,36 +1,376 @@
-/* extra.css - カスタムスタイル */
+/* extra.css - カスタムスタイル（モダンマニュアルデザイン） */
 
-/* 見出しの視認性向上 */
+/* ============================================
+   カスタムプロパティ（CSS変数）
+   ============================================ */
+:root {
+    --md-primary-fg-color: #1a73e8;
+    --md-primary-fg-color--light: #4285f4;
+    --md-primary-fg-color--dark: #1557b0;
+    --md-accent-fg-color: #00bcd4;
+    --custom-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+    --custom-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --custom-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --custom-radius-sm: 6px;
+    --custom-radius-md: 8px;
+    --custom-radius-lg: 12px;
+    --custom-transition: 0.2s ease-in-out;
+}
+
+/* ダークモード調整 */
+[data-md-color-scheme="slate"] {
+    --md-primary-fg-color: #4285f4;
+    --md-primary-fg-color--light: #669df6;
+    --custom-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --custom-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   全体レイアウト
+   ============================================ */
+.md-main__inner {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.md-content {
+    padding-top: 1.5rem;
+}
+
+/* ============================================
+   見出しスタイル
+   ============================================ */
 .md-typeset h1 {
     font-weight: 700;
-    border-bottom: 2px solid var(--md-primary-fg-color);
-    padding-bottom: 0.3em;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    border-bottom: 3px solid var(--md-primary-fg-color);
+    padding-bottom: 0.5em;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .md-typeset h2 {
     font-weight: 600;
-    border-bottom: 1px solid var(--md-default-fg-color--lighter);
-    padding-bottom: 0.2em;
-    margin-top: 1.5em;
+    font-size: 1.5rem;
+    color: var(--md-default-fg-color);
+    border-left: 4px solid var(--md-primary-fg-color);
+    padding-left: 0.75rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
 }
 
 .md-typeset h3 {
     font-weight: 600;
-    color: var(--md-primary-fg-color);
+    font-size: 1.2rem;
+    color: var(--md-primary-fg-color--dark);
+    margin-top: 2rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px dashed var(--md-default-fg-color--lighter);
 }
 
-/* コードブロックの調整 */
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+    font-weight: 600;
+    margin-top: 1.5rem;
+}
+
+/* ============================================
+   コードブロック
+   ============================================ */
+.md-typeset pre {
+    border-radius: var(--custom-radius-md);
+    box-shadow: var(--custom-shadow-md);
+    border: 1px solid var(--md-default-fg-color--lightest);
+}
+
 .md-typeset pre>code {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    padding: 1rem;
+}
+
+.md-typeset code {
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
     font-size: 0.85em;
 }
 
-/* テーブルの調整 */
-.md-typeset table:not([class]) th {
-    background-color: var(--md-primary-fg-color);
-    color: var(--md-primary-bg-color);
+/* インラインコード */
+.md-typeset :not(pre)>code {
+    background-color: var(--md-code-bg-color);
+    border: 1px solid var(--md-default-fg-color--lightest);
 }
 
-/* 警告・注意ボックスの調整 */
+/* コピーボタン */
+.md-typeset .md-clipboard {
+    transition: var(--custom-transition);
+}
+
+.md-typeset .md-clipboard:hover {
+    color: var(--md-accent-fg-color);
+}
+
+/* ============================================
+   テーブル
+   ============================================ */
+.md-typeset table:not([class]) {
+    border-radius: var(--custom-radius-md);
+    overflow: hidden;
+    box-shadow: var(--custom-shadow-sm);
+    border: 1px solid var(--md-default-fg-color--lightest);
+    font-size: 0.9rem;
+}
+
+.md-typeset table:not([class]) th {
+    background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-primary-fg-color--dark));
+    color: white;
+    font-weight: 600;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    padding: 0.8rem 1rem;
+}
+
+.md-typeset table:not([class]) td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--md-default-fg-color--lightest);
+}
+
+.md-typeset table:not([class]) tr:hover td {
+    background-color: var(--md-code-bg-color);
+}
+
+.md-typeset table:not([class]) tr:last-child td {
+    border-bottom: none;
+}
+
+/* ============================================
+   Admonition（警告・注意ボックス）
+   ============================================ */
 .md-typeset .admonition {
-    font-size: 0.9em;
+    border-radius: var(--custom-radius-md);
+    box-shadow: var(--custom-shadow-sm);
+    border-left-width: 4px;
+    font-size: 0.9rem;
+    margin: 1.5rem 0;
+}
+
+.md-typeset .admonition-title {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.md-typeset .admonition.note {
+    border-left-color: #448aff;
+}
+
+.md-typeset .admonition.tip {
+    border-left-color: #00c853;
+}
+
+.md-typeset .admonition.warning {
+    border-left-color: #ff9100;
+}
+
+.md-typeset .admonition.danger {
+    border-left-color: #ff1744;
+}
+
+.md-typeset .admonition.info {
+    border-left-color: #00b8d4;
+}
+
+/* ============================================
+   ナビゲーション
+   ============================================ */
+.md-tabs {
+    background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-primary-fg-color--dark));
+    box-shadow: var(--custom-shadow-sm);
+}
+
+.md-tabs__link {
+    font-weight: 500;
+    opacity: 0.85;
+    transition: var(--custom-transition);
+}
+
+.md-tabs__link:hover {
+    opacity: 1;
+}
+
+.md-tabs__link--active {
+    opacity: 1;
+    font-weight: 600;
+}
+
+/* サイドバー */
+.md-nav__link {
+    transition: var(--custom-transition);
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem !important;
+    margin: 2px 0;
+}
+
+.md-nav__link:hover {
+    background-color: var(--md-code-bg-color);
+}
+
+.md-nav__link--active {
+    font-weight: 600;
+    color: var(--md-primary-fg-color) !important;
+    background-color: rgba(26, 115, 232, 0.08);
+}
+
+/* ============================================
+   目次（TOC）
+   ============================================ */
+.md-nav--secondary .md-nav__link {
+    font-size: 0.8rem;
+}
+
+.md-nav--secondary .md-nav__link--active {
+    border-left: 2px solid var(--md-primary-fg-color);
+    padding-left: calc(0.6rem - 2px) !important;
+}
+
+/* ============================================
+   検索
+   ============================================ */
+.md-search__form {
+    border-radius: var(--custom-radius-lg);
+    transition: var(--custom-transition);
+}
+
+.md-search__form:hover {
+    box-shadow: var(--custom-shadow-md);
+}
+
+.md-search__input {
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   リンク
+   ============================================ */
+.md-typeset a {
+    transition: var(--custom-transition);
+}
+
+.md-typeset a:hover {
+    color: var(--md-accent-fg-color);
+}
+
+/* ============================================
+   リスト
+   ============================================ */
+.md-typeset ul li,
+.md-typeset ol li {
+    margin-bottom: 0.4rem;
+}
+
+.md-typeset ul li::marker {
+    color: var(--md-primary-fg-color);
+}
+
+/* ============================================
+   ボタン・バッジ
+   ============================================ */
+.md-typeset .md-button {
+    border-radius: var(--custom-radius-md);
+    font-weight: 500;
+    transition: var(--custom-transition);
+    box-shadow: var(--custom-shadow-sm);
+}
+
+.md-typeset .md-button:hover {
+    box-shadow: var(--custom-shadow-md);
+    transform: translateY(-1px);
+}
+
+.md-typeset .md-button--primary {
+    background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-primary-fg-color--dark));
+}
+
+/* ============================================
+   フッター
+   ============================================ */
+.md-footer {
+    background: linear-gradient(135deg, #263238, #37474f);
+}
+
+.md-footer-meta {
+    background: transparent;
+}
+
+/* ============================================
+   スクロールバー（Webkit）
+   ============================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--md-default-bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--md-default-fg-color--lighter);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--md-default-fg-color--light);
+}
+
+/* ============================================
+   印刷時のスタイル
+   ============================================ */
+@media print {
+    .confidential-badge {
+        position: absolute !important;
+        top: 0 !important;
+        right: 0 !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+/* ============================================
+   アニメーション
+   ============================================ */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.md-content {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* カードスタイル（任意で使用） */
+.md-typeset .card {
+    background: var(--md-default-bg-color);
+    border-radius: var(--custom-radius-lg);
+    box-shadow: var(--custom-shadow-md);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border: 1px solid var(--md-default-fg-color--lightest);
+    transition: var(--custom-transition);
+}
+
+.md-typeset .card:hover {
+    box-shadow: var(--custom-shadow-lg);
+    transform: translateY(-2px);
 }
