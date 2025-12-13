@@ -19,14 +19,14 @@ theme:
     logo: material/book-open-page-variant
   palette:
     - scheme: default
-      primary: indigo
-      accent: indigo
+      primary: brown
+      accent: amber
       toggle:
         icon: material/brightness-7
         name: ダークモードに切り替え
     - scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: brown
+      accent: amber
       toggle:
         icon: material/brightness-4
         name: ライトモードに切り替え

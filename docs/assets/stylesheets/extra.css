@@ -2,12 +2,13 @@
 
 /* ============================================
    カスタムプロパティ（CSS変数）
+   落ち着いたテラコッタ/アンバー系カラー
    ============================================ */
 :root {
-    --md-primary-fg-color: #1a73e8;
-    --md-primary-fg-color--light: #4285f4;
-    --md-primary-fg-color--dark: #1557b0;
-    --md-accent-fg-color: #00bcd4;
+    --md-primary-fg-color: #a65d1b;
+    --md-primary-fg-color--light: #c77b3a;
+    --md-primary-fg-color--dark: #8b4513;
+    --md-accent-fg-color: #b8860b;
     --custom-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
     --custom-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
     --custom-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -19,8 +20,8 @@
 
 /* ダークモード調整 */
 [data-md-color-scheme="slate"] {
-    --md-primary-fg-color: #4285f4;
-    --md-primary-fg-color--light: #669df6;
+    --md-primary-fg-color: #d4915a;
+    --md-primary-fg-color--light: #e0a873;
     --custom-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
     --custom-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
