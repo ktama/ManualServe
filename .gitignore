@@ -1,0 +1,35 @@
+# MkDocs ビルド成果物
+site/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+*.egg
+
+# pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# ログ
+*.log
+
+# 一時ファイル
+*.tmp
+*.temp
+.cache/

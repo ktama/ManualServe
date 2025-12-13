@@ -1,0 +1,36 @@
+/* extra.css - カスタムスタイル */
+
+/* 見出しの視認性向上 */
+.md-typeset h1 {
+    font-weight: 700;
+    border-bottom: 2px solid var(--md-primary-fg-color);
+    padding-bottom: 0.3em;
+}
+
+.md-typeset h2 {
+    font-weight: 600;
+    border-bottom: 1px solid var(--md-default-fg-color--lighter);
+    padding-bottom: 0.2em;
+    margin-top: 1.5em;
+}
+
+.md-typeset h3 {
+    font-weight: 600;
+    color: var(--md-primary-fg-color);
+}
+
+/* コードブロックの調整 */
+.md-typeset pre>code {
+    font-size: 0.85em;
+}
+
+/* テーブルの調整 */
+.md-typeset table:not([class]) th {
+    background-color: var(--md-primary-fg-color);
+    color: var(--md-primary-bg-color);
+}
+
+/* 警告・注意ボックスの調整 */
+.md-typeset .admonition {
+    font-size: 0.9em;
+}
