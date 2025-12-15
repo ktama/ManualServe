@@ -37,14 +37,14 @@ jobs:
           echo "✅ Site directory exists with index.html"
 
       - name: Build Docker image
-        run: docker build -t mkdocs-nginx -f container/Dockerfile .
+        run: docker build --progress=plain -t mkdocs-nginx -f container/Dockerfile .
 
       - name: Run container
         run: |
           docker run -d \
             --name mkdocs-nginx \
             -p 8080:80 \
-            -v "$(pwd)/site:/usr/share/nginx/html:ro" \
+            -v "$GITHUB_WORKSPACE/site:/usr/share/nginx/html:ro" \
             mkdocs-nginx
 
       - name: Debug - Check container status
@@ -57,6 +57,9 @@ jobs:
           echo ""
           echo "=== Files in container ==="
           docker exec mkdocs-nginx ls -la /usr/share/nginx/html/ || true
+          echo ""
+          echo "=== Nginx config ==="
+          docker exec mkdocs-nginx cat /etc/nginx/nginx.conf || true
 
       - name: Wait for HTTP 200 and test
         run: |
@@ -72,6 +75,12 @@ jobs:
           done
           echo "❌ Container did not return HTTP 200 in time"
           docker logs mkdocs-nginx || true
+          echo ""
+          echo "=== Host site dir listing ==="
+          ls -la "$GITHUB_WORKSPACE/site" || true
+          echo ""
+          echo "=== Docker images ==="
+          docker images mkdocs-nginx || true
           exit 1
 
       - name: Test content
@@ -173,11 +182,20 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential
+
       - name: Install MkDocs Material
-        run: pip install mkdocs-material
+        run: |
+          pip install --upgrade pip
+          pip install mkdocs-material
 
       - name: Build MkDocs site
-        run: ./scripts/build.sh
+        run: |
+          set -x
+          ./scripts/build.sh
 
       - name: Run container-run.sh script
         run: |
@@ -203,6 +221,9 @@ jobs:
           done
           echo "❌ Container did not return HTTP 200 in time"
           docker logs mkdocs-nginx || true
+          echo ""
+          echo "=== Host site dir listing ==="
+          ls -la site || true
           exit 1
 
       - name: Cleanup
