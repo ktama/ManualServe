@@ -136,8 +136,25 @@ jobs:
             -v "$(pwd)/site:/usr/share/nginx/html:ro" \
             mkdocs-nginx
 
+      - name: Debug - Check container status
+        run: |
+          echo "=== Container status ==="
+          podman ps -a
+          echo ""
+          echo "=== Container logs ==="
+          podman logs mkdocs-nginx || true
+          echo ""
+          echo "=== Files in container ==="
+          podman exec mkdocs-nginx ls -la /usr/share/nginx/html/ || true
+          echo ""
+          echo "=== Nginx config ==="
+          podman exec mkdocs-nginx cat /etc/nginx/nginx.conf || true
+          echo ""
+          echo "=== Host site directory ==="
+          ls -la site/ || true
+
       - name: Install curl
-        run: dnf install -y curl
+        run: dnf install -y --allowerasing curl
 
       - name: Wait for HTTP 200 and test
         run: |
@@ -152,7 +169,12 @@ jobs:
             sleep 1
           done
           echo "❌ Container did not return HTTP 200 in time"
+          echo ""
+          echo "=== Final container logs ==="
           podman logs mkdocs-nginx || true
+          echo ""
+          echo "=== Container inspect ==="
+          podman inspect mkdocs-nginx || true
           exit 1
 
       - name: Test content
