@@ -1,10 +1,8 @@
 # ManualServe
 
-[![CI - Container Build & Test](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml)
+[![CI - Container Build & Test](https://github.com/ktama/ManualServe/actions/workflows/ci.yml/badge.svg)](https://github.com/ktama/ManualServe/actions/workflows/ci.yml)
 
 Markdown マニュアルを MkDocs Material で静的サイト化し、コンテナ（Podman / Docker）+ Nginx で配信するためのリポジトリ雛形です。
-
-> **Note**: 上記バッジの `<OWNER>/<REPO>` は実際のリポジトリ名に置き換えてください。
 
 ## 目的
 
