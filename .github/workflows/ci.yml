@@ -1,0 +1,211 @@
+name: CI - Container Build & Test
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  # =============================================================================
+  # Ubuntu + Docker
+  # =============================================================================
+  ubuntu-docker:
+    name: Ubuntu + Docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install MkDocs Material
+        run: pip install mkdocs-material
+
+      - name: Build MkDocs site
+        run: ./scripts/build.sh
+
+      - name: Verify site directory
+        run: |
+          test -d site
+          test -f site/index.html
+          echo "✅ Site directory exists with index.html"
+
+      - name: Build Docker image
+        run: docker build -t mkdocs-nginx -f container/Dockerfile .
+
+      - name: Run container
+        run: |
+          docker run -d \
+            --name mkdocs-nginx \
+            -p 8080:80 \
+            -v "$(pwd)/site:/usr/share/nginx/html:ro" \
+            mkdocs-nginx
+
+      - name: Wait for container to be healthy
+        run: |
+          for i in {1..30}; do
+            if docker inspect --format='{{.State.Health.Status}}' mkdocs-nginx 2>/dev/null | grep -q healthy; then
+              echo "✅ Container is healthy"
+              exit 0
+            fi
+            echo "Waiting for container to be healthy... ($i/30)"
+            sleep 1
+          done
+          echo "❌ Container did not become healthy in time"
+          docker logs mkdocs-nginx
+          exit 1
+
+      - name: Test HTTP response
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ HTTP 200 OK"
+          else
+            echo "❌ HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Test content
+        run: |
+          curl -s http://localhost:8080 | grep -q "ManualServe"
+          echo "✅ Content check passed"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop mkdocs-nginx || true
+          docker rm mkdocs-nginx || true
+
+  # =============================================================================
+  # AlmaLinux + Podman
+  # =============================================================================
+  almalinux-podman:
+    name: AlmaLinux + Podman
+    runs-on: ubuntu-latest
+
+    container:
+      image: almalinux:9
+      options: --privileged
+
+    steps:
+      - name: Install dependencies
+        run: |
+          dnf install -y git python3 python3-pip podman
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install MkDocs Material
+        run: pip3 install mkdocs-material
+
+      - name: Build MkDocs site
+        run: ./scripts/build.sh
+
+      - name: Verify site directory
+        run: |
+          test -d site
+          test -f site/index.html
+          echo "✅ Site directory exists with index.html"
+
+      - name: Build Podman image
+        run: podman build -t mkdocs-nginx -f container/Containerfile .
+
+      - name: Run container
+        run: |
+          podman run -d \
+            --name mkdocs-nginx \
+            -p 8080:80 \
+            -v "$(pwd)/site:/usr/share/nginx/html:ro" \
+            mkdocs-nginx
+
+      - name: Wait for container to be ready
+        run: |
+          for i in {1..30}; do
+            if podman exec mkdocs-nginx wget -q --spider http://localhost/ 2>/dev/null; then
+              echo "✅ Container is ready"
+              exit 0
+            fi
+            echo "Waiting for container to be ready... ($i/30)"
+            sleep 1
+          done
+          echo "❌ Container did not become ready in time"
+          podman logs mkdocs-nginx
+          exit 1
+
+      - name: Test HTTP response
+        run: |
+          # Install curl for testing
+          dnf install -y curl
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ HTTP 200 OK"
+          else
+            echo "❌ HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Test content
+        run: |
+          curl -s http://localhost:8080 | grep -q "ManualServe"
+          echo "✅ Content check passed"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          podman stop mkdocs-nginx || true
+          podman rm mkdocs-nginx || true
+
+  # =============================================================================
+  # Test container-run.sh script
+  # =============================================================================
+  test-container-run-script:
+    name: Test container-run.sh (Ubuntu)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install MkDocs Material
+        run: pip install mkdocs-material
+
+      - name: Build MkDocs site
+        run: ./scripts/build.sh
+
+      - name: Run container-run.sh script
+        run: |
+          chmod +x container/container-run.sh
+          ./container/container-run.sh
+
+      - name: Verify container is running
+        run: |
+          docker ps | grep mkdocs-nginx
+          echo "✅ Container is running"
+
+      - name: Test HTTP response
+        run: |
+          sleep 5
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8080)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ HTTP 200 OK"
+          else
+            echo "❌ HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop mkdocs-nginx || true
+          docker rm mkdocs-nginx || true

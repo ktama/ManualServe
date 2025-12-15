@@ -1,6 +1,10 @@
 # ManualServe
 
+[![CI - Container Build & Test](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml/badge.svg)](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml)
+
 Markdown マニュアルを MkDocs Material で静的サイト化し、コンテナ（Podman / Docker）+ Nginx で配信するためのリポジトリ雛形です。
+
+> **Note**: 上記バッジの `<OWNER>/<REPO>` は実際のリポジトリ名に置き換えてください。
 
 ## 目的
 
@@ -300,9 +304,9 @@ HOST_PORT=9090 ./container/container-run.sh
   - Let's Encrypt 証明書の自動取得
   - nginx.conf に SSL 設定追加
 
-- **CI/CD 連携**
-  - Git push 時に自動ビルド・デプロイ
-  - GitHub Actions / GitLab CI テンプレート追加
+- **CI/CD 連携** ✅ 実装済み
+  - GitHub Actions で AlmaLinux + Podman / Ubuntu + Docker の両環境でテスト
+  - `.github/workflows/ci.yml` を参照
 
 - **多言語対応**
   - MkDocs の i18n プラグイン導入
